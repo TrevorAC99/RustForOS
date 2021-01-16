@@ -61,11 +61,16 @@ fn example_alloc_multi_points() {
     unsafe {
         let heap_points_raw: *mut Point = my_alloc(number_of_elements);
 
+        // We can treat the pointer that we explicitly allocated as if it were a slice.
+        // Now we just have to make sure that we don't mutate any data held by the raw
+        // pointer until we are done using the slice. Otherwise, strange and terrible
+        // things could happen.
         let heap_points_slice = std::slice::from_raw_parts_mut(heap_points_raw, number_of_elements);
 
         for (index, point) in heap_points_slice.iter_mut().enumerate() {
             let index_plus_1 = (index + 1) as f64;
-            // Here `*point` is dereferencing a normal Rust mutable reference, not a raw pointer so this line is actually safe code
+            // Here `*point` is dereferencing a normal Rust mutable reference,
+            // not a raw pointer so this line is actually safe code.
             *point = Point::new(3.0 * index_plus_1, 4.0 * index_plus_1);
         }
 
@@ -77,8 +82,6 @@ fn example_alloc_multi_points() {
                 index, distance
             );
         }
-
-        drop(heap_points_slice);
 
         my_dealloc(heap_points_raw, number_of_elements);
     }
