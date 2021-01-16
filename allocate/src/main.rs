@@ -21,10 +21,16 @@ fn example_alloc_single_point() {
     // Create a Point on the stack
     let stack_point = Point::origin();
 
-    // Create a boxed Point, essentially a heap-allocated Point
+    // Create a boxed Point, essentially a heap-allocated Point.
+    // The memory used for the point is "owned" by the Box<Point> stored in
+    // heap_point. Unless the ownership of that Box is changed, it will be
+    // dropped when heap_point goes out of scope.
     let heap_point = Box::new(Point::new(3.0, 4.0));
 
     println!("{}", stack_point.distance(heap_point.as_ref()));
+
+    // At this time, heap_point is going out of scope so Rust will statically
+    // call the drop method of the Box which will handle freeing of the memory.
 }
 
 fn example_alloc_multi_points() {
@@ -51,6 +57,10 @@ fn example_alloc_multi_points() {
             index, distance
         );
     }
+
+    // Just like for the Box in the `example_alloc_single_point` function,
+    // the Vec owns the heap memory used by its contents so when the Vec is
+    // dropped, it will take care of deallocating its memory.
 }
 
 fn main() {
