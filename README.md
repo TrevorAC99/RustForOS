@@ -22,6 +22,6 @@ allowing the programmer to not have to worry about explicitly calling `malloc()`
 This example does the same thing as the `allocate` example but works with raw pointers rather
 than using Rust's `Box<T>` and `Vec<T>` like you would in normal use.
 
-## `concurrency
+## `concurrency`
 
 This example is an implementation of project 3 from the OS class. I implemented this project to show Rust's way of using mutexes, condition variables, and threads since I already had the requirements for it and it nicely demonstrates how these things are used. Implementing this project in Rust is a great demonstration of Rust's concurrency benefits because the lack of unsafe Rust means that if it compiles, it is guaranteed to be free of race conditions.
