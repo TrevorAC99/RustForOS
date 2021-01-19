@@ -26,10 +26,19 @@ fn main() {
         // Cloning an Arc clones the reference to the data and lets the smart
         // pointer know that there is now another reference to the data. That
         // reference count will be decremented when that clone of the Arc is
-        // dropped.
+        // dropped. The data in the Arc will be dropped when the reference count
+        // reaches zero.
         let santa = santa.clone();
         let reindeer = reindeer.clone();
         let elves = elves.clone();
+        // The threading provided by the standard library uses whatever native
+        // threading model is provided by the system. That means that on systems
+        // with pthreads, that's what will be used. On Windows, the Windows native
+        // threads will be used. The specifics are abstracted over this nice api
+        // that spawns a thread and returns a JoinHandle that can then be joined
+        // on at a later date. The JoinHandle is generic over the type of the value
+        // returned by the function passed to the thread so it would be easy to use
+        // threads to "produce" values and "return" them to the parent thread.
         thread::spawn(move || {
             start_santa(santa, reindeer, elves);
         })
@@ -73,6 +82,9 @@ fn start_santa(
     reindeer: Arc<(Mutex<i32>, Condvar)>,
     elves: Arc<(Mutex<i32>, Condvar)>,
 ) {
+    // Many smart pointers in Rust implement the `Deref` trait which allows structs
+    // to be dereferenced as if they were a normal pointer. The following three lines
+    // are dereferencing the Arcs to obtain references to the data inside.
     let (santa_mutex, santa_cvar) = &*santa;
     let (warming_shed_mutex, reindeer_cdvar) = &*reindeer;
     let (elf_waiting_mutex, elf_cvar) = &*elves;
