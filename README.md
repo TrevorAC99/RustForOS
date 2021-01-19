@@ -1,8 +1,7 @@
 # RustForOS
 
 These are some examples of Rust code showcasing features that might be useful if Rust were to
-replace C in the Operating Systems class at the University of Wisconsin Oshkosh. Currently,
-`allocate`, `alloc_unsafe`, and `concurrency` have code examples, the other projects are hello world placeholders for now.
+replace C in the Operating Systems class at the University of Wisconsin Oshkosh.
 
 ## `allocate`
 
@@ -25,3 +24,7 @@ than using Rust's `Box<T>` and `Vec<T>` like you would in normal use.
 ## `concurrency`
 
 This example is an implementation of project 3 from the OS class. I implemented this project to show Rust's way of using mutexes, condition variables, and threads since I already had the requirements for it and it nicely demonstrates how these things are used. Implementing this project in Rust is a great demonstration of Rust's concurrency benefits because the lack of unsafe Rust means that if it compiles, it is guaranteed to be free of race conditions.
+
+## `processes`
+
+This example shows how to spawn processes and use pipes as exposed by the Rust standard library. While one of my examples will only run on *nix, that is because I am using `echo` and `grep` to showcase a use of pipes, but the method by which I set up the pipe is 100% cross-platform and will compile and run on Windows, Mac, Linux, and whatever other operating systems Rust supports. If you want to use the *nix idea of fork -> exec, there is a crate that exposed *nix platform apis including those found in the libc "unistd.h" header. With this, you have access to fork, exec, dup, and other such functions at the cost of it only working on *nix systems. See https://docs.rs/nix/0.19.1/nix/unistd/index.html for the documentation of the `nix` crate and the bindings to the `"unistd.h"` functions.
