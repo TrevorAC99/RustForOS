@@ -20,18 +20,20 @@ impl Point {
     }
 }
 
-unsafe fn example_alloc_single_point() {
+fn example_alloc_single_point() {
     // Create a Point on the stack
     let stack_point = Point::origin();
 
-    // Create a pointer to a Point on the heap.
-    let heap_point: *mut Point = alloc(Layout::new::<Point>()) as *mut Point;
-
-    *heap_point = Point::new(3.0, 4.0);
-
-    println!("{}", stack_point.distance(&*heap_point));
-
-    dealloc(heap_point as *mut u8, Layout::new::<Point>());
+    unsafe {
+        // Create a pointer to a Point on the heap.
+        let heap_point: *mut Point = my_alloc(1);
+    
+        *heap_point = Point::new(3.0, 4.0);
+    
+        println!("{}", stack_point.distance(&*heap_point));
+    
+        my_dealloc(heap_point as *mut u8, 1);
+    }
 }
 
 /// Custom alloc function that makes the current allocation API
@@ -88,9 +90,7 @@ fn example_alloc_multi_points() {
 }
 
 fn main() {
-    unsafe {
-        example_alloc_single_point();
+    example_alloc_single_point();
 
-        example_alloc_multi_points();
-    }
+    example_alloc_multi_points();
 }
